@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Fotos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .search-bar {
+            margin: 1rem auto;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 0.5rem;
+        }
+
+        .search-bar button:hover {
+            background-color: #555;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .photo-item {
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .photo-item img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-name {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                font-size: 1.2rem;
+                padding: 0.8rem 0;
+            }
+
+            .search-bar input[type="text"] {
+                width: 90%;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .photo-name {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Galeria de Fotos
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Digite uma palavra-chave...">
+        <button id="searchButton">🔍</button>
+    </div>
+
+    <div class="photo-gallery" id="gallery">
+        <!-- Photos will be dynamically loaded here -->
+    </div>
+
+    <div class="no-results" id="noResults" style="display: none;">
+        Nenhuma foto encontrada.
+    </div>
+
+    <footer>
+        &copy; 2024 Galeria de Fotos. Todos os direitos reservados.
+    </footer>
+
+    <script>
+        const gallery = document.getElementById('gallery');
+        const searchInput = document.getElementById('search');
+        const noResults = document.getElementById('noResults');
+
+        // Sample static data (can be replaced with API calls)
+        const photos = [
+            { name: "Montanha", url: "assets/images/Montanha.jpeg" },
+            { name: "Praia", url: "assets/images/Praia.jpeg" },
+            { name: "Floresta", url: "assets/images/Floresta.jpeg" },
+            { name: "Cidade", url: "assets/images/Cidade.jpeg" },
+            { name: "Deserto", url: "assets/images/Deserto.jpeg" },
+            { name: "Rio", url: "assets/images/Rio.jpeg" },
+            { name: "Lago", url: "assets/images/Lago.jpeg" },
+            { name: "Cachoeira", url: "assets/images/Cachoeira.jpeg" },
+            { name: "Neve", url: "assets/images/Neve.jpeg" },
+            { name: "Pôr do Sol", url: "assets/images/Por do sol.jpeg" }
+        ];
+
+        function loadPhotos() {
+            gallery.innerHTML = '';
+            photos.forEach(photo => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.dataset.name = photo.name;
+
+                photoItem.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.name}">
+                    <div class="photo-name">${photo.name}</div>
+                `;
+
+                gallery.appendChild(photoItem);
+            });
+        }
+
+        function filterPhotos(query) {
+            let matches = 0;
+
+            photos.forEach(photo => {
+                const photoItem = document.querySelector(`.photo-item[data-name="${photo.name}"]`);
+
+                if (photo.name.toLowerCase().includes(query)) {
+                    photoItem.style.display = 'block';
+                    matches++;
+                } else {
+                    photoItem.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = matches === 0 ? 'block' : 'none';
+        }
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            filterPhotos(query);
+        });
+
+        // Initialize gallery
+        loadPhotos();
+    </script>
+</body>
+</html>
